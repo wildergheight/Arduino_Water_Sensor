@@ -9,9 +9,11 @@ char ssid[] = "Scarlet&Gray";     // your network SSID (name)
 char password[] = "letsgoBucks"; // your network key
 int status = WL_IDLE_STATUS;
 int Liquid_level=0;
-
+int level_flag=0;
 // Pushsafer private or alias key
 #define PushsaferKey "8Q6JBAV3AARS5RNFHd0m"
+
+struct PushSaferInput input;
 
 /*WiFiClientSecure client;*/
 WiFiClient client;
@@ -19,6 +21,7 @@ Pushsafer pushsafer(PushsaferKey, client);
 
 void setup() {
   Serial.begin(115200);
+  Serial.print("Starting now");
   pinMode(5,INPUT);
   if (WiFi.status() == WL_NO_MODULE) {
     Serial.println("Communication with WiFi module failed!");
@@ -53,11 +56,11 @@ void setup() {
   // Take a look at the Pushsafer.com API at
   // https://www.pushsafer.com/en/pushapi
   
-  struct PushSaferInput input;
-  input.message = "This is a test message";
-  input.title = "Hello!";
+  
+  input.message = "This is a !#$&*";
+  input.title = "AAAAAAAAAAAAAAAAHHHHHHHHHHHH!";
   input.sound = "1";
-  input.vibration = "1";
+  input.vibration = "2";
   input.icon = "1";
   input.iconcolor = "#FFCCCC";
   input.priority = "1";
@@ -71,16 +74,19 @@ void setup() {
   input.retry = "";
   input.expire = "";
   input.answer = "";
-
-  Serial.println(pushsafer.sendEvent(input));
-  Serial.println("Sent");
+  Serial.println("Initialized");
   
   // client.stop();
 }
 
 void loop() {
-Liquid_level=digitalRead(5);
-Serial.print("Liquid_level= ");
-Serial.println(Liquid_level,DEC);
-delay(500);
+  Liquid_level=digitalRead(5);
+  Serial.print("Liquid_level= ");
+  Serial.println(Liquid_level,DEC);
+  delay(5000);
+  if ((Liquid_level < 1)&&(level_flag < 1)) {
+    Serial.print("Sent");
+    pushsafer.sendEvent(input);
+    level_flag = 1;
+   }
 }
